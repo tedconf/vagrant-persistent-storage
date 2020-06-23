@@ -11,11 +11,13 @@ module VagrantPlugins
           if controller_name.nil?
             controller_name = "SATA Controller"
             execute("storagectl", @uuid, "--name", controller_name, "--" + (self.remove_prefix(@version) ? "" : "sata") + "portcount", "2", "--add", "sata")
+          elsif controller_name.start_with?("SCSI")
+            execute("storagectl", @uuid, "--name", controller_name, "--" + (self.remove_prefix(@version) ? "" : "sata") + "portcount", "16")
           else
             execute("storagectl", @uuid, "--name", controller_name, "--" + (self.remove_prefix(@version) ? "" : "sata") + "portcount", "2")
           end
         end
-        
+
         def remove_prefix(vbox_version)
            return vbox_version.start_with?("4.3") || vbox_version.start_with?("5.") || vbox_version.start_with?("6.")
         end
@@ -122,4 +124,3 @@ module VagrantPlugins
     end
   end
 end
-
